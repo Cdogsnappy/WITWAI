@@ -1,5 +1,7 @@
 ### Pipeline Overview
 
+Using Jupyter notebooks for now -> we'll probably want to rewrite as basic scripts once we move onto cloud computing.
+
 ### Data Cleaning and Preparation
 
 1) data_prep.ipynb
