@@ -3,3 +3,5 @@ pandas>=1.5.3
 geopandas>=0.14.3
 easyocr>=1.7.1
 pygeos>=0.14
+langdetect>=1.0.9
+googlemaps>=4.10.0
