@@ -6,3 +6,6 @@ google_maps_api_key.txt
 mapillary_client_token.txt
 Data/urban/readme_V1_2.txt
 Data/urban/GHSL_FUA_2019.pdf
+claude_api_key.txt
+cyrillic_OCR.csv
+latin_OCR.csv
