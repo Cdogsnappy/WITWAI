@@ -5,3 +5,11 @@ easyocr>=1.7.1
 pygeos>=0.14
 langdetect>=1.0.9
 googlemaps>=4.10.0
+torch
+torchvision
+numpy
+pillow
+scikit-learn
+tqdm
+matplotlib
+visdom
