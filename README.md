@@ -55,7 +55,7 @@ We have implemented a multi-model pipeline in order to classify the country labe
 
 ### Dataset(s)
 
-The initial dataset that was used during our pipeline testing is a set of 10,000 images and scraped from google street view. These can be found at [Google Street View](https://www.kaggle.com/datasets/paulchambaz/google-street-view/data) - the script *kaggle_data_prep.ipynb* can be used to collect this dataset. Images are 640x640. We found a very low density of text, as well as a low density of segmentable features, in this dataset, so this was only used for testing the initial implementation of our models, and was not used during model training. 
+The initial dataset that was used during our pipeline testing is a set of 10,000 images and scraped from google street view. These can be found at [Google Street View](https://www.kaggle.com/datasets/paulchambaz/google-street-view/data) - the script *kaggle_data_prep.ipynb* can be used to collect this dataset. Images are 640x640. We found a very low density of text, as well as a low density of segmentable features, in this dataset, so this was only used for testing the initial implementation of our models, and was not used during model training. These images are pruned to only contain European images, which is  ~20% of the dataset.
 
 For the model training, we attempted to collect two separate datasets:
 1. Google Maps Street View (gmaps) Data
@@ -94,11 +94,9 @@ The Mapillary dataset is collected similarly.
 8) Then, we query the API for the image at the given URL. 
 9) Finally, we store the (lat/lon) and country ID in a .csv file, and store the image with the filename corresponding to the dataset's index.
 
-### Data Processing
-
-
-
 ### OCR Language Guessing
+
+
 
 ### Segmentation
 
