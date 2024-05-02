@@ -15,6 +15,7 @@ The final project report must be submitted to Canvas as a website. The website m
 
 #### Overview 
 
+We have implemented a multi-model pipeline in order to classify the country label of each image. This is utilizing an OCR text recognition model, a SotA LLM for language identification, an image segmentation model, and a deep feedforward network. All code is written in python, using either Jupyter notebooks or Python scripts. Implementation of the FFNN is handled in PyTorch. 
 
 #### Data Processing
 
