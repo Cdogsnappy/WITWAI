@@ -11,9 +11,10 @@ The final project report must be submitted to Canvas as a website. The website m
 - Intro presenting and motivating the problem
 - Your methodology (method, data, evaluation metrics). If applicable, highlight how it differs from prior work (new experiments, new methods, etc)
 
-<p style="text-align: center;"> # Methodology </p>
+# Methodology 
 
 #### Overview 
+
 
 #### Data Processing
 
