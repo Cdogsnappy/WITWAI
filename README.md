@@ -1,12 +1,12 @@
 # Where in the World am I?
-Approaching GeoLocation with Machine Learning
+A multi-model approach to GeoLocation using machine learning.
 
-## Authors
+A project made primarily as part of CS 766 Computer Vision at UW-Madison.
+
+Authors:
 - Nick Boddy
 - Caleb Raschka
 - Morgan Turville-Heitz
-
-This project was made for CS 766 Computer Vision at UW-Madison.
 
 [Project Presentation](https://docs.google.com/presentation/d/1akX8-ajRWpmPtD93Bkqu015D39DX9NZOcdgDnppzA8Q)
 
