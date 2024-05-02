@@ -83,7 +83,7 @@ The gmaps dataset is collected by the code in the later half of the *mapillary_g
 
 It is important to note here that we were rate-limited by the gmaps querying - Google thought we were data scraping, and were unable to generate as large of a dataset as we would've liked. However, the gmaps dataset would be the optimal dataset in the future, due to data uniformity and consistency. This will be discussed further in the results section.
 
-The mapillary dataset is collected similarly to the gmaps dataset.
+Mapillary is an open-source dataset of publicly uploaded images by users around the world, supported by the OpenStreetMaps project. The mapillary dataset is collected similarly to the gmaps dataset.
 
 1) We load a GeoPandas object (*world*) containing the polygon representation of countries. This maps a (longitude/latitude) pair to a specific country ID.
 2) We join *world* with a new GeoPandas object containing the Urban Areas polygon database, *urban_areas*. This is the Global Human Settlement Layer R2019A dataset [GHS-FUA R2019A](https://human-settlement.emergency.copernicus.eu/ghs_fua.php). By joining the two objects, we are able to restrict sampling to urban areas, in order to target higher-information images when sampling.
@@ -97,11 +97,24 @@ The mapillary dataset is collected similarly to the gmaps dataset.
 
 ## OCR Language Guessing
 
+[EasyOCR](https://github.com/JaidedAI/EasyOCR) is used for all text extraction. This is a publicly available, built-in OCR library for Python. It supports a number of languages, and importantly, supports both Latin and Cyrillic scripts. Outputs are of the form ["Text", "Confidence", "Bounding Box"]. If multiple pieces of text are found, they are all returned as a nested list. 
+
 There are two separate methods for the OCR model. The first method is what is used for the kaggle and gmaps dataset, and the second method is used for the mapillary dataset. However, the two methods are identical after a certain point, so I will discuss the data preparation that is needed for the kaggle and gmaps datasets first, before discussing how all three datasets are processed by the OCR model.
 
-#### Kaggle/Gmaps Preparation
 
-The primary issue is that the kaggle/gmaps datasets contain Google© watermarks. Therefore, OCR text recognition will 
+#### kaggle/gmaps Preparation
+
+The primary issue is that the kaggle/gmaps datasets contain Google© watermarks. Therefore, OCR text recognition will see each Google watermark, and dominate the results of the text extraction. The method of handling this is below:
+1) First, we create an English-only EasyOCR instance. 
+2) Then, this is run on every image in the dataset.
+3) Detected strings are then matched against the following:
+- ["gccole", "cgoogle", "cgccgle", "cgcogle", "cgocgle", "google", "gccgle", "gcogle", "gocgle", "gocnle", "gcogie", "oogle"]
+4) If any matches with the above list are found, we overwrite the bounding box for that text with black pixels. This image is then saved into a new directory, which is used for the OCR extraction.
+
+After this point, the kaggle/gmaps preparation is identical to mapillary, as mapillary does not have constant watermarks. There are watermarks on the mapillary dataset, but there are far more variations, since the dataset is open sourced.
+
+#### OCR Extraction for mapillary/kaggle/gmaps
+
 
 
 ## Segmentation
