@@ -1,4 +1,4 @@
-# WITWAI
+# Where in the world am I? (WITWAI)
 Deep learning and computer vision to play GeoGuessr!
 
 Website:
@@ -37,10 +37,13 @@ The gmaps dataset is collected by the code in the later half of the *mapillary_g
 - d. We check if the joined Shapely point is found within the selected object, and if so, we then check if the point is in Europe.
 - e. If the object is in Europe, we return the (lat/lon) pair and the country as a label for the datapoint.
 5) If the (lat/lon) sampling was succesful, we have to perform an important step - identifying an address that we can query the API for.
-- a. The Google Maps API is queried with our (lat/lon) coordinates.
-- b. If there is a nearby address within ~5 kilometers, the closest addressed is returned. 
+- a. We use a gmaps object with the function *reverse_geocode* to identify an address based on a (lat/lon) pair.
+- b. If there is a nearby address within ~5 kilometers, the closest address is returned. 
+- c. This address then needs to be parsed, in order to query the API for an image in step 6). 
 6) If the address sampling was succesful, we query the Google Maps API, and query the API for an image. This functions as follows: 
-- a. We use a standard HTTP query, with the lat/lon values in the header as 
+- a. We use a standard HTTP query, with the address as an argument in the HTTP request.
+- b. If we receive a 200 response code (i.e. succesful query), and if the image is not empty (image size > 10kb), we store the image. A non-negligible number of images result in empty returns, which are blank with an image filesize ~5kb.
+7) Finally, we store the (lat/lon) and country ID in a .csv file, and store the image with the filename corresponding to the dataset's index. 
 
 ### Data Processing
 
