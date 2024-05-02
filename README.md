@@ -51,11 +51,11 @@ The final project report must be submitted to Canvas as a website. The website m
 
 # Methodology 
 
-### Overview 
+## Overview 
 
 We have implemented a multi-model pipeline in order to classify the country label of each image. This is utilizing an OCR text recognition model, a SotA LLM for language identification, an image segmentation model, and a deep feedforward network. All code is written in python, using either Jupyter notebooks or Python scripts. Implementation of the FFNN is handled in PyTorch. 
 
-### Dataset(s)
+## Dataset(s)
 
 The initial dataset that was used during our pipeline testing is a set of 10,000 images and scraped from google street view. These can be found at [Google Street View](https://www.kaggle.com/datasets/paulchambaz/google-street-view/data) - the script *kaggle_data_prep.ipynb* can be used to collect this dataset. Images are 640x640. We found a very low density of text, as well as a low density of segmentable features, in this dataset, so this was only used for testing the initial implementation of our models, and was not used during model training. These images are pruned to only contain European images, which is  ~20% of the dataset.
 
@@ -83,8 +83,9 @@ The gmaps dataset is collected by the code in the later half of the *mapillary_g
 - If we receive a 200 response code (i.e. succesful query), and if the image is not empty (image size > 10kb), we store the image. A non-negligible number of images result in empty returns, which are blank with an image filesize ~5kb.
 7) Finally, we store the (lat/lon) and country ID in a .csv file, and store the image with the filename corresponding to the dataset's index. 
 
+It is important to note here that we were rate-limited by the gmaps querying - Google thought we were data scraping, and were unable to generate as large of a dataset as we would've liked. However, the gmaps dataset would be the optimal dataset in the future, due to data uniformity and consistency. This will be discussed further in the results section.
 
-The Mapillary dataset is collected similarly.
+Mapillary is an open-source dataset of publicly uploaded images by users around the world, supported by the OpenStreetMaps project. The mapillary dataset is collected similarly to the gmaps dataset.
 
 1) We load a GeoPandas object (*world*) containing the polygon representation of countries. This maps a (longitude/latitude) pair to a specific country ID.
 2) We join *world* with a new GeoPandas object containing the Urban Areas polygon database, *urban_areas*. This is the Global Human Settlement Layer R2019A dataset [GHS-FUA R2019A](https://human-settlement.emergency.copernicus.eu/ghs_fua.php). By joining the two objects, we are able to restrict sampling to urban areas, in order to target higher-information images when sampling.
@@ -96,13 +97,40 @@ The Mapillary dataset is collected similarly.
 8) Then, we query the API for the image at the given URL. 
 9) Finally, we store the (lat/lon) and country ID in a .csv file, and store the image with the filename corresponding to the dataset's index.
 
-### OCR Language Guessing
+## OCR Language Guessing
+
+[EasyOCR](https://github.com/JaidedAI/EasyOCR) is used for all text extraction. This is a publicly available, built-in OCR library for Python. It supports a number of languages, and importantly, supports both Latin and Cyrillic scripts. Outputs are of the form ["Text", "Confidence", "Bounding Box"]. If multiple pieces of text are found, they are all returned as a nested list. 
+
+There are two separate methods for the OCR model. The first method is what is used for the kaggle and gmaps dataset, and the second method is used for the mapillary dataset. However, the two methods are identical after a certain point, so I will discuss the data preparation that is needed for the kaggle and gmaps datasets first, before discussing how all three datasets are processed by the OCR model.
 
 
+#### kaggle/gmaps Preparation
 
-### Segmentation
+The primary issue is that the kaggle/gmaps datasets contain Google© watermarks. Therefore, OCR text recognition will see each Google watermark, and dominate the results of the text extraction. The method of handling this is below:
+1) First, we create an English-only EasyOCR instance. 
+2) Then, this is run on every image in the dataset.
+3) Detected strings are then matched against the following:
+- ["gccole", "cgoogle", "cgccgle", "cgcogle", "cgocgle", "google", "gccgle", "gcogle", "gocgle", "gocnle", "gcogie", "oogle"]
+4) If any matches with the above list are found, we overwrite the bounding box for that text with black pixels. This image is then saved into a new directory, which is used for the OCR extraction.
 
-### FFNN
+After this point, the kaggle/gmaps preparation is identical to mapillary, as mapillary does not have constant watermarks. There are watermarks on the mapillary dataset, but there are far more variations, since the dataset is open sourced.
+
+#### OCR Extraction for mapillary/kaggle/gmaps
+
+Extraction is quite simple for all datasets.
+
+1) We create two separate EasyOCR instances - *latin* and *cyrillic*. These contain all relevant European languages for the given script.
+2) We run both of these models on every image in the dataset. We choose the results from the highest-confidence results (e.g. if *cyrillic* has confidence 0.9 and *latin* has confidence 0.8, we keep all *cyrillic* results).
+3) This is thresholded by the *THRESHOLD* parameter.
+4) We store the extracted text and the confidence for each extracted text in a new .csv file.
+
+#### Language identification.
+
+Language identification 
+
+## Segmentation
+
+## FFNN
 
 
 
