@@ -7,7 +7,9 @@ Approaching GeoLocation with Machine Learning
 - Morgan Turville-Heitz
 
 This project was made for CS 766 Computer Vision at UW-Madison.
+
 [Project Presentation](https://docs.google.com/presentation/d/1akX8-ajRWpmPtD93Bkqu015D39DX9NZOcdgDnppzA8Q)
+
 [GitHub](https://github.com/Cdogsnappy/WITWAI)
 
 ---
@@ -15,9 +17,25 @@ This project was made for CS 766 Computer Vision at UW-Madison.
 ## Motivations
 [GeoGuessr](https://www.geoguessr.com/) is a web-based game wherein the player is dropped into random places in the world and is given visual information via Google Street View. Using the information presented, the player must make a guess as to the coordinates of the image by placing a pin on the globe.
 
-Due to the game's popularity, a competitive scene has arisen in which certain players have become more or less experts at GeoLocation. They have played many games and tend to be capable at:
-1. Identifying language or script
-2. Identifying biome have internalized distinguishing features 
+Due to the game's popularity, a competitive scene has arisen in which certain players have become more or less experts at GeoLocation. These players have learned and harnessed certain skills that allow them to excel. These include but are not limited to:
+1. Reading and understanding text
+2. Identifying language/script of text
+3. Recognizing different types/styles of:
+    - Architecture
+    - Vehicles
+    - Biomes
+    - Flora
+    - Fauna
+    - Geography
+4. Understanding geographical distributions and correlations of the presences of these identifications
+
+This last point is ultimately key. For a player to make the best prediction with the information available, they must rely on their understanding of how all of these pieces assemble to produce a geographical location that makes sense.
+
+By now it is surely obvious that the task of GeoLocation is learnable, and our approach to this problem is designed to leverage how skilled GeoGuessr players approach the game.
+
+## Prior Work
+
+Before expanding on our approach 
 
 Website:
 
