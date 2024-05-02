@@ -49,19 +49,32 @@ The gmaps dataset is collected by the code in the later half of the *mapillary_g
 2) We join *world* with a new GeoPandas object containing the Urban Areas polygon database, *urban_areas*. This is the Global Human Settlement Layer R2019A dataset [GHS-FUA R2019A](https://human-settlement.emergency.copernicus.eu/ghs_fua.php). By joining the two objects, we are able to restrict sampling to urban areas, in order to target higher-information images when sampling.
 3) We then sample 66% of images from "Urban areas" and 33% of images from "Rural areas," as defined above.
 4) Sampling of coordinates is performed as follows:
-- a. We randomly generate a (lat/lon) pair.
-- b. We create a Shapely.geometry point from the pair.
-- c. We join the Shapely point with either the *urban_areas* object or the *world* object, depending on if the sample is intended to be rural or urban.
-- d. We check if the joined Shapely point is found within the selected object, and if so, we then check if the point is in Europe.
-- e. If the object is in Europe, we return the (lat/lon) pair and the country as a label for the datapoint.
+- We randomly generate a (lat/lon) pair.
+- We create a Shapely.geometry point from the pair.
+- We join the Shapely point with either the *urban_areas* object or the *world* object, depending on if the sample is intended to be rural or urban.
+- We check if the joined Shapely point is found within the selected object, and if so, we then check if the point is in Europe.
+- If the object is in Europe, we return the (lat/lon) pair and the country as a label for the datapoint.
 5) If the (lat/lon) sampling was succesful, we have to perform an important step - identifying an address that we can query the API for.
-- a. We use a gmaps object with the function *reverse_geocode* to identify an address based on a (lat/lon) pair.
-- b. If there is a nearby address within ~5 kilometers, the closest address is returned. 
-- c. This address then needs to be parsed, in order to query the API for an image in step 6). 
+- We use a gmaps object with the function *reverse_geocode* to identify an address based on a (lat/lon) pair.
+- If there is a nearby address within ~5 kilometers, the closest address is returned. 
+- This address then needs to be parsed, in order to query the API for an image in step 6). 
 6) If the address sampling was succesful, we query the Google Maps API, and query the API for an image. This functions as follows: 
-- a. We use a standard HTTP query, with the address as an argument in the HTTP request.
-- b. If we receive a 200 response code (i.e. succesful query), and if the image is not empty (image size > 10kb), we store the image. A non-negligible number of images result in empty returns, which are blank with an image filesize ~5kb.
+- We use a standard HTTP query, with the address as an argument in the HTTP request.
+- If we receive a 200 response code (i.e. succesful query), and if the image is not empty (image size > 10kb), we store the image. A non-negligible number of images result in empty returns, which are blank with an image filesize ~5kb.
 7) Finally, we store the (lat/lon) and country ID in a .csv file, and store the image with the filename corresponding to the dataset's index. 
+
+
+The Mapillary dataset is collected similarly.
+
+1) We load a GeoPandas object (*world*) containing the polygon representation of countries. This maps a (longitude/latitude) pair to a specific country ID.
+2) We join *world* with a new GeoPandas object containing the Urban Areas polygon database, *urban_areas*. This is the Global Human Settlement Layer R2019A dataset [GHS-FUA R2019A](https://human-settlement.emergency.copernicus.eu/ghs_fua.php). By joining the two objects, we are able to restrict sampling to urban areas, in order to target higher-information images when sampling.
+3) We then filter out only European urban areas prior to beginning the dataset search. 
+4) We then randomly sample urban areas in the resultant *urban_areas_in_europe* object.
+5) This urban area object contains bounding boxes (west, south, east, north), i.e. two (lon/lat) pairs identifying the opposing corners of the box.
+6) Each urban area contains multiple "tiles". We sweep over these tiles, and query the Mapillary API to identify if any images are present in a given tile.
+7) If a given tile contains images, we request the API again for the URL of the images for a given tile. 
+8) Then, we query the API for the image at the given URL. 
+9) Finally, we store the (lat/lon) and country ID in a .csv file, and store the image with the filename corresponding to the dataset's index.
 
 ### Data Processing
 
