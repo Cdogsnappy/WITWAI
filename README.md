@@ -17,9 +17,15 @@ The final project report must be submitted to Canvas as a website. The website m
 
 We have implemented a multi-model pipeline in order to classify the country label of each image. This is utilizing an OCR text recognition model, a SotA LLM for language identification, an image segmentation model, and a deep feedforward network. All code is written in python, using either Jupyter notebooks or Python scripts. Implementation of the FFNN is handled in PyTorch. 
 
+### Dataset(s)
+
+The initial dataset that was used during our pipeline testing is a set of 10,000 images and scraped from google street view. These can be found at [Google Street View](https://www.kaggle.com/datasets/paulchambaz/google-street-view/data) - the script *kaggle_data_prep.ipynb* can be used to collect this dataset. Images are 640x640. We found a very low density of text, as well as a low density of segmentable features, in this dataset, so this was only used for testing the initial implementation of our models, and was not used during model training. 
+
+
+
 ### Data Processing
 
-The initial dataset that was used during our pipeline testing is a set of 10,000 images, scraped from google images, found at [Google Street View](https://www.kaggle.com/datasets/paulchambaz/google-street-view/data). 
+
 
 ### OCR Language Guessing
 
