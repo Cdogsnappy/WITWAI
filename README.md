@@ -31,11 +31,13 @@ Due to the game's popularity, a competitive scene has arisen in which certain pl
 
 This last point is ultimately key. For a player to make the best prediction with the information available, they must rely on their understanding of how all of these pieces assemble to produce a geographical location that makes sense.
 
-By now it is surely obvious that the task of GeoLocation is learnable, and our approach to this problem is designed to leverage how skilled GeoGuessr players approach the game.
+By now it is surely obvious that the task of GeoLocation is learnable. Our approach to this problem is designed to leverage how skilled GeoGuessr players approach the game.
 
 ## Prior Work
 
-Before expanding on our approach 
+Prior applications of machine learning to GeoLocation have used a number of different models with varying degrees of success.
+
+[DeepGeo](https://arxiv.org/abs/1810.03077) uses a CNN
 
 Website:
 
