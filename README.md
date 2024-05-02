@@ -127,7 +127,7 @@ The order of operations follows thusly:
 5) The highest confidence language is stored in the final .csv file, which is passed forward to the Feed Forward network. 
 
 #### LLM system prompt:
-
+" 
 You are tasked with determining the language of a string, or set of strings. The strings were extracted from randomly sampled images in a dataset. The strings may or may not be meaningless.
 
 The input will be formatted as a JSON input. There will be two entries - 
@@ -215,7 +215,7 @@ If the input is invalid, please return instead error 4xx, and a description of w
  "response": 4xx,
  "error": "The issue with the input"
 }
-
+"
 #### Example LLM input/output 
 
 Input:
@@ -231,6 +231,11 @@ Output:
 }
 
 
+### Segmentation 
+
+### FFNN
+
+
 ## Quantitative Results
 Our model exhibits fairly unstable behavior under our current data and parameters. For our evaluation metrics, we 
 simply used 0-1 accuracy. When considering our options for metrics, we decided that a notion of proximity would be ignored, 
@@ -241,7 +246,35 @@ The model does not train well under these conditions, and is very sensitive to i
 the model quickly experienced mode collapse, and so a small amount of training epochs are used. Without mode collapse, we get varying levels of accuracy.
 The saved model included reported an accuracy of ~6%. This is of course not a great result, but it is better than randomly guessing, 
 as we have 23 classes which would have a random guess accuracy of ~4.5%.
-- (Important) Demos of your approach.
+
+
+# Demo
+
+### It is _strongly_ recommended that you run the Demo on a system with CUDA enabled. 
+
+There are a few things needed for the demo.
+First of all, you'll want to run 
+```bash 
+$pip install -r requirements.txt 
+```
+in the project directory.
+
+## Data Collection 
+You will need: 
+
+- A Mapillary API key, generated at [Mapillary](https://www.mapillary.com/app/?lat=20&lng=0&z=1.5&menu=true). The Mapillary API key should be placed in your project directory. If you would like it elsewhere in your system, you'll need to update the path in *mapillary_google_maps_data_prep.ipynb*.
+- A Google Maps API key, generated at [Google Maps Developer Dashboard](https://developers.google.com/maps). Similarly, The Google Maps API key should be placed in the project directory. 
+- A Kaggle API key, generated at [Kaggle](https://www.kaggle.com/). You'll want to move the Kaggle API key to `~/.kaggle/kaggle.json`
+
+Then, you will be able to run *mapillary_google_maps_data_prep.ipynb* to generate your dataset. The notebook is currently set up for mapillary - you can also use this same notebook for gmaps. If you would like to use the kaggle dataset instead, you can use *kaggle_data_prep.ipynb*.
+
+
+## OCR and Language Identification
+
+The notebook should work as is, but you'll want to run the watermark removal blocks if your dataset is gmaps or kaggle. This code is found at the end of the script, and should not be used for mapillary (however, if you'd like to try and remove other watermarks from the mapillary dataset, this codeblock would work as well).
+
+## Semseg
+
 
 ## FFNN Training and Testing
 Prerequisites: OCR Training + Segmentation Training
