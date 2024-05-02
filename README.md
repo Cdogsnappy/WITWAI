@@ -216,7 +216,22 @@ If the input is invalid, please return instead error 4xx, and a description of w
  "error": "The issue with the input"
 }
 
-### Quantitative Results
+#### Example LLM input/output 
+
+Input:
+{
+  "confidence": [0.999],
+  "text": ["Schadenfreude"]
+}
+
+Output:
+{
+"confidence": 10,
+"lang": "de"
+}
+
+
+## Quantitative Results
 Our model exhibits fairly unstable behavior under our current data and parameters. For our evaluation metrics, we 
 simply used 0-1 accuracy. When considering our options for metrics, we decided that a notion of proximity would be ignored, 
 contrary to the rules of GeoGuessr. Thus, the model loss is the same when it guesses a country 50 km away that it would be if it
@@ -228,7 +243,7 @@ The saved model included reported an accuracy of ~6%. This is of course not a gr
 as we have 23 classes which would have a random guess accuracy of ~4.5%.
 - (Important) Demos of your approach.
 
-### FFNN Training and Testing
+## FFNN Training and Testing
 Prerequisites: OCR Training + Segmentation Training
 
 There are some auxiliary files that won't be necessary for use.
