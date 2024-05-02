@@ -117,7 +117,104 @@ Extraction is quite simple for all datasets.
 
 #### Language identification.
 
-Language identification 
+Here we use a state of the art (SotA) Large Language Model, Claude 3 Opus, in order to guess the language of extracted text.
+
+The order of operations follows thusly:
+1) We load the extracted OCR text. All text above *THRESHOLD* for the given model is used.
+2) We generate a header containing the *system prompt* and the *load*, i.e. the initial instructions to the LLM, and the text which it responds too.
+3) This is sent as an HTTP request to Anthropic. It costs roughly $15 for the ~500 pieces of text we found on our training dataset. Please note, if you are reproducing this on your machine, it is relatively expensive to query the API.
+4) The LLM response is returned from the HTTP .get request, and is interpreted as a .JSON load. This is then thresholded again by the LLM's internal confidence. Interestingly, the LLM is apparently incapable of giving 5 as a confidence, and only very very rarely gives 6 as a confidence. 
+5) The highest confidence language is stored in the final .csv file, which is passed forward to the Feed Forward network. 
+
+#### LLM system prompt:
+
+You are tasked with determining the language of a string, or set of strings. The strings were extracted from randomly sampled images in a dataset. The strings may or may not be meaningless.
+
+The input will be formatted as a JSON input. There will be two entries - 
+1) A list of confidence metrics, ranging from 0 to 1, which is output from an EasyOCR text extraction model. One confidence metric for each string.
+2) A list of strings, which were extracted from the model.
+
+Input format is of the form:
+{
+  "confidence": [0.5, 0.3],
+  "text": ["Extracted text 1", "Extracted text 2"]
+}
+
+Naturally, the confidence at index i corresponds to the string at index i.
+
+Please output two values:
+
+1) An integer confidence between 0 and 10. This does not need to be precise - I'd just like to differentiate between "very confident" and "not at all confident". As a model, you are effectively performing two functions: a) filtering out meaningless text OCR (for example, a response like "Kf8xc"), and b) identifying the language if and only if you're very confident.
+2) A language guess, using the 2-character standard identifier, e.g. "en" or "de"
+
+
+Your output should be of the form:
+
+{
+  "confidence": 3,
+  "lang": "en"
+}
+
+Do not include any additional information in your response - only return the JSON output as described above. 
+
+If multiple languages seem present (for instance, both Serbian (Latin) and Serbian (Cyrillic), I would like you to return both languages, sorted by the confidence, as lists. For instance:
+
+{
+  "confidence": [0.7, 0.4],
+  "lang": ["en", "de"]
+}
+
+If a language has no matches (for instance, if the language is Mongolian or Chinese, which are not in the list of target languages), the confidence should be set to 0. 
+If all of the text is numeric (as would be expected from e.g. speed limit signs) the confidence should be low. 
+If the text seems like the metadata of a camera (for instance, data/time info from a dash-cam), confidence should be set very low, as the text is unrelated to text within the background. 
+If the text appears to have small typos (e.g. "Rrestaurant"), you may lower the confidence, but assume that this is due to variations in the font, or errors in the OCR model.
+If the text is the name of a city, retail store, or other regional entity, (for instance, "Wrocław"), please return the dominant language spoken in that region (in this case, "pl").
+
+
+The languages that you may choose from are as follows:
+
+{
+"Belarusian": "be",
+"Bulgarian": "bg",
+"Czech": "cs",
+"Welsh": "cy",
+"Danish": "da",
+"German": "de",
+"English": "en",
+"Spanish": "es",
+"Estonian": "et",
+"French": "fr",
+"Irish": "ga",
+"Croatian": "hr",
+"Hungarian": "hu",
+"Icelandic": "is",
+"Italian": "it",
+"Latin": "la",
+"Lithuanian": "lt",
+"Latvian": "lv",
+"Maltese": "mt",
+"Dutch": "nl",
+"Norwegian": "no",
+"Polish": "pl",
+"Portuguese": "pt",
+"Romanian": "ro",
+"Russian": "ru",
+"Serbian (Latin)": "rs",
+"Serbian (Cyrillic)": "rc",
+"Slovak": "sk",
+"Slovenian": "sl",
+"Albanian": "sq",
+"Swedish": "sv",
+"Turkish": "tr",
+"Ukrainian": "uk"
+}
+
+If the input is invalid, please return instead error 4xx, and a description of why the input is invalid.
+
+{
+ "response": 4xx,
+ "error": "The issue with the input"
+}
 
 ### Quantitative Results
 Our model exhibits fairly unstable behavior under our current data and parameters. For our evaluation metrics, we 
