@@ -12,14 +12,15 @@ from torch.utils.data import DataLoader
 
 from CustomImageDataset import CustomImageDataset
 
-if not os.path.exists(os.getcwd() + str('/outputs')):
-    os.mkdir(os.getcwd() + '/outputs')
+if not os.path.exists(os.path.dirname(os.path.dirname(os.getcwd())) + str('/outputs')):
+    os.mkdir(os.path.dirname(os.path.dirname(os.getcwd())) + '/outputs')
 print(torch.seed())
 np.set_printoptions(threshold=np.inf)
-f = open(str(os.getcwd()) + "/Data/used_countries.csv", 'r')
+f = open(str(os.path.dirname(os.path.dirname(os.getcwd()))) + "/Data/used_countries.csv", 'r')
 classes = [l.rstrip() for l in f]
 classes = classes[1:]
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 class FinalFFNN(nn.Module):
     def __init__(self):
@@ -42,7 +43,7 @@ class FinalFFNN(nn.Module):
             nn.Linear(2048, 1024),
             nn.ReLU(),
             nn.Dropout(.2),
-            nn.Linear(1024,512),
+            nn.Linear(1024, 512),
             nn.ReLU(),
             nn.Dropout(.2),
             nn.Linear(512, 128),
@@ -72,6 +73,7 @@ class FinalFFNN(nn.Module):
         softmax = nn.Softmax(dim=1)
         return softmax(self.model(nn_in.float()))
 
+
 def run():
     epochs = 4
     batch_size = 10
@@ -84,10 +86,10 @@ def run():
     criterion = nn.CrossEntropyLoss()
     criterion.to(device)
     losses = []
-    train_data = CustomImageDataset('Data/train_data/train_ocr.csv', 'Data/train_data')
-    test_data = CustomImageDataset('Data/test_data/test_ocr.csv', 'Data/test_data')
+    train_data = CustomImageDataset('../Data/train_data/train_ocr.csv', 'Data/train_data')
+    test_data = CustomImageDataset('../Data/test_data/test_ocr.csv', 'Data/test_data')
     train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
-    test_loader = DataLoader(test_data, batch_size=len(classes)*10, shuffle=False)
+    test_loader = DataLoader(test_data, batch_size=len(classes) * 10, shuffle=False)
     true_label_matrix = np.diag(np.ones(len(classes)) * (1 - len(classes) * smoothing_factor))
     true_label_matrix += smoothing_factor
     for e in range(epochs):
@@ -98,11 +100,9 @@ def run():
             true_label = torch.from_numpy(true_label_matrix[real.numpy(), :]).to(device)
             optimizer.zero_grad()
             pred = fin_model.forward([lang_vec.to(device), images.to(device)]).to(device)
-            print(Tensor.cpu(pred).detach().numpy())
             loss = criterion(pred, true_label)
             loss.backward()
             optimizer.step()
-            #print(loss.item())
             loss_e += loss.item()
         print(loss_e / bi)
         losses.append(loss_e / bi)
@@ -116,11 +116,12 @@ def run():
     true_label = true_label_matrix[test_labels.numpy(), :]
     test_images, test_lang = test_data
     fin_model.eval()
-    pred = Tensor.cpu(fin_model.forward([test_lang.to(device), test_images.to(device)])).detach().numpy()  # (10xlen(classes))xlen(classes) tensor representing probability of each country for the test data
+    pred = Tensor.cpu(fin_model.forward([test_lang.to(device), test_images.to(
+        device)])).detach().numpy()  # (10xlen(classes))xlen(classes) tensor representing probability of each country for the test data
     country_prediction = np.argmax(pred, 1)
     real_prediction = np.argmax(true_label, 1)
     for val in range(len(country_prediction)):
         print('Guess: ' + str(classes[country_prediction[val]]) + ' Truth: ' + str(classes[real_prediction[val]]))
-    accuracy = (len(classes)*10 - np.count_nonzero(country_prediction - real_prediction)) / (len(classes)*10)
+    accuracy = (len(classes) * 10 - np.count_nonzero(country_prediction - real_prediction)) / (len(classes) * 10)
     print("Accuracy of " + str(accuracy) + " achieved!")
-    torch.save(fin_model, os.getcwd() + str('/outputs/model.pt'))
+    torch.save(fin_model, os.path.dirname(os.path.dirname(os.getcwd())) + str('/outputs/model.pt'))

@@ -8,15 +8,15 @@ from final_net import FinalFFNN
 from CustomImageDataset import CustomImageDataset
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = torch.load(os.getcwd() + str('/outputs/saved_models/model1.pt'))
+model = torch.load(os.path.dirname(os.path.dirname(os.getcwd())) + str('/outputs/saved_models/model1.pt'))
 model = nn.DataParallel(model, device_ids=[0])
 
 
-f = open(str(os.getcwd()) + "/Data/used_countries.csv", 'r')
+f = open(str(os.path.dirname(os.path.dirname(os.getcwd()))) + "/Data/used_countries.csv", 'r')
 classes = [l.rstrip() for l in f]
 classes = classes[1:]
 smoothing_factor = .01
-test_data = CustomImageDataset('Data/test_data/test_ocr.csv', 'Data/test_data')
+test_data = CustomImageDataset('../Data/test_data/test_ocr.csv', 'Data/test_data')
 test_loader = DataLoader(test_data, batch_size=len(classes) * 10, shuffle=False)
 true_label_matrix = np.diag(np.ones(len(classes)) * (1 - len(classes) * smoothing_factor))
 true_label_matrix += smoothing_factor
