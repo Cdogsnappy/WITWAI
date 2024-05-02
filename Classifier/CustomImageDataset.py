@@ -7,10 +7,10 @@ from PIL import Image
 from torch.utils.data import Dataset
 import torchvision.transforms as TF
 
-f = open(str(os.getcwd()) + "/Data/used_countries.csv", 'r')
+f = open(str(os.path.dirname(os.getcwd())) + "/Data/used_countries.csv", 'r')
 classes = [l.rstrip() for l in f]
 classes = classes[1:]
-f = open(str(os.getcwd()) + "/Data/language_list.csv", 'r')
+f = open(str(os.path.dirname(os.getcwd())) + "/Data/language_list.csv", 'r')
 languages = [l.rstrip() for l in f]
 transform = TF.Compose([TF.PILToTensor()])
 mean = np.empty((3, 1024, 1024))
