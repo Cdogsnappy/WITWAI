@@ -115,7 +115,16 @@ After this point, the kaggle/gmaps preparation is identical to mapillary, as map
 
 #### OCR Extraction for mapillary/kaggle/gmaps
 
+Extraction is quite simple for all datasets.
 
+1) We create two separate EasyOCR instances - *latin* and *cyrillic*. These contain all relevant European languages for the given script.
+2) We run both of these models on every image in the dataset. We choose the results from the highest-confidence results (e.g. if *cyrillic* has confidence 0.9 and *latin* has confidence 0.8, we keep all *cyrillic* results).
+3) This is thresholded by the *THRESHOLD* parameter.
+4) We store the extracted text and the confidence for each extracted text in a new .csv file.
+
+#### Language identification.
+
+Language identification 
 
 ## Segmentation
 
