@@ -15,9 +15,28 @@ This project was made for CS 766 Computer Vision at UW-Madison.
 ## Motivations
 [GeoGuessr](https://www.geoguessr.com/) is a web-based game wherein the player is dropped into random places in the world and is given visual information via Google Street View. Using the information presented, the player must make a guess as to the coordinates of the image by placing a pin on the globe.
 
-Due to the game's popularity, a competitive scene has arisen in which certain players have become more or less experts at GeoLocation. They have played many games and tend to be capable at:
-1. Identifying language or script
-2. Identifying biome have internalized distinguishing features 
+
+Due to the game's popularity, a competitive scene has arisen in which certain players have become more or less experts at GeoLocation. These players have learned and harnessed certain skills that allow them to excel. These include but are not limited to:
+1. Reading and understanding text
+2. Identifying language/script of text
+3. Recognizing different types/styles of:
+    - Architecture
+    - Vehicles
+    - Biomes
+    - Flora
+    - Fauna
+    - Geography
+4. Understanding geographical distributions and correlations of the presences of these identifications
+
+This last point is ultimately key. For a player to make the best prediction with the information available, they must rely on their understanding of how all of these pieces assemble to produce a geographical location that makes sense.
+
+By now it is surely obvious that the task of GeoLocation is learnable. Our approach to this problem is designed to leverage how skilled GeoGuessr players approach the game.
+
+## Prior Work
+
+Prior applications of machine learning to GeoLocation have used a number of different models with varying degrees of success.
+
+[DeepGeo](https://arxiv.org/abs/1810.03077) uses a CNN
 
 Website:
 
@@ -65,15 +84,40 @@ The gmaps dataset is collected by the code in the later half of the *mapillary_g
 
 ### Data Processing
 
+Mapillary is an open-source dataset of publicly uploaded images by users around the world, supported by the OpenStreetMaps project. The mapillary dataset is collected similarly to the gmaps dataset.
 
 
 ### OCR Language Guessing
 
-### Segmentation
 
-### FFNN
+[EasyOCR](https://github.com/JaidedAI/EasyOCR) is used for all text extraction. This is a publicly available, built-in OCR library for Python. It supports a number of languages, and importantly, supports both Latin and Cyrillic scripts. Outputs are of the form ["Text", "Confidence", "Bounding Box"]. If multiple pieces of text are found, they are all returned as a nested list. 
+
+There are two separate methods for the OCR model. The first method is what is used for the kaggle and gmaps dataset, and the second method is used for the mapillary dataset. However, the two methods are identical after a certain point, so I will discuss the data preparation that is needed for the kaggle and gmaps datasets first, before discussing how all three datasets are processed by the OCR model.
 
 
+#### kaggle/gmaps Preparation
+
+The primary issue is that the kaggle/gmaps datasets contain Google© watermarks. Therefore, OCR text recognition will see each Google watermark, and dominate the results of the text extraction. The method of handling this is below:
+1) First, we create an English-only EasyOCR instance. 
+2) Then, this is run on every image in the dataset.
+3) Detected strings are then matched against the following:
+- ["gccole", "cgoogle", "cgccgle", "cgcogle", "cgocgle", "google", "gccgle", "gcogle", "gocgle", "gocnle", "gcogie", "oogle"]
+4) If any matches with the above list are found, we overwrite the bounding box for that text with black pixels. This image is then saved into a new directory, which is used for the OCR extraction.
+
+After this point, the kaggle/gmaps preparation is identical to mapillary, as mapillary does not have constant watermarks. There are watermarks on the mapillary dataset, but there are far more variations, since the dataset is open sourced.
+
+#### OCR Extraction for mapillary/kaggle/gmaps
+
+Extraction is quite simple for all datasets.
+
+1) We create two separate EasyOCR instances - *latin* and *cyrillic*. These contain all relevant European languages for the given script.
+2) We run both of these models on every image in the dataset. We choose the results from the highest-confidence results (e.g. if *cyrillic* has confidence 0.9 and *latin* has confidence 0.8, we keep all *cyrillic* results).
+3) This is thresholded by the *THRESHOLD* parameter.
+4) We store the extracted text and the confidence for each extracted text in a new .csv file.
+
+#### Language identification.
+
+Language identification 
 
 ### Quantitative Results
 Our model exhibits fairly unstable behavior under our current data and parameters. For our evaluation metrics, we 
