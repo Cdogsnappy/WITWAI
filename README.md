@@ -145,6 +145,13 @@ The order of operations follows thusly:
 4) The LLM response is returned from the HTTP .get request, and is interpreted as a .JSON load. This is then thresholded again by the LLM's internal confidence. Interestingly, the LLM is apparently incapable of giving 5 as a confidence, and only very very rarely gives 6 as a confidence. 
 5) The highest confidence language is stored in the final .csv file, which is passed forward to the Feed Forward network. 
 
+It's important to note that language is not an ideal predictor of language. For instance, English text may be found throughout Europe, German may be found throughout all of central Europe, etc.
+
+Below is an example of this - we have an image from the Mapillary dataset with english text, which the LLM identified as English with confidence 10. However, this is an English company brand name on a freight truck, and the image is actually from Germany. This shows one of the many complications with using language and text extraction for language identification.
+
+![](PageFiles/en_lang_example_860.png)
+
+
 #### LLM system prompt:
 " 
 You are tasked with determining the language of a string, or set of strings. The strings were extracted from randomly sampled images in a dataset. The strings may or may not be meaningless.
