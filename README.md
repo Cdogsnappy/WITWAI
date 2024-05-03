@@ -304,36 +304,36 @@ Prerequisites: OCR Training + Segmentation Training
 
 There are some auxiliary files that won't be necessary for use.
 
-1. [ClassFrequency.py](Classifier/ClassFrequency.py) is used to calculate the frequency of each class in the data. This was used for data
+1. [ClassFrequency.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/ClassFrequency.py) is used to calculate the frequency of each class in the data. This was used for data
 normalization and is not necessary for training.
 
-2. [TestSetBuilder.py](Classifier/TestSetBuilder.py) is used to build a test and train dataset using all of the data. This does not account
+2. [TestSetBuilder.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/TestSetBuilder.py) is used to build a test and train dataset using all of the data. This does not account
 for class imbalance and thus will produce completely unstable training that will result in mode collapse.
 
 Some files will be used automatically and won't need to be called by a user.
 
-1. [CustomImageDataset.py](Classifier/CustomImageDataset.py) is an implementation of PyTorch's [Dataset](https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset) module which can
+1. [CustomImageDataset.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/CustomImageDataset.py) is an implementation of PyTorch's [Dataset](https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset) module which can
 take the data for training and testing and feed it to the neural network for us.
 
-2. [final_net.py](Classifier/final_net.py) has been wrapped inside two files, ModelTester and ModelTrainer, and thus doesn't need to 
+2. [final_net.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/final_net.py) has been wrapped inside two files, ModelTester and ModelTrainer, and thus doesn't need to 
 be used for reproducing results. However, any model tuning would be done in final_net.
 
 ### How to Train
-1. Run [BalancedSetBuilder.py](Classifier/BalancedSetBuilder.py)  
+1. Run [BalancedSetBuilder.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/BalancedSetBuilder.py)  
 This script will build a dataset with balanced classes for the model to run on. The
 data_size parameter determines how many data points for each country to use. Note that
 countries with < data_size samples will be skipped, and so the used_countries.csv file must be updated
 to reflect the countries that are present in the data.
-2. Run [ModelTrainer.py](Classifier/ModelTrainer.py)  
+2. Run [ModelTrainer.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/ModelTrainer.py)  
 Yes, it's that easy. If you are content with the model 
 parameters of final_net.py, then go ahead and run ModelTrainer. This will run the model for the 
 given number of epochs, using the given batch size, and will test the model on the test_data generated from
-BalancedSetBuilder. If you do wish to alter training hyperparameters, they can be found here in [final_net.py](Classifier/final_net.py):
+BalancedSetBuilder. If you do wish to alter training hyperparameters, they can be found here in [final_net.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/final_net.py):
 ![](PageFiles/final_net_parameters.png)
 Note that the training parameter learning rate cannot be decoupled for the two submodels in the FFNN; The weights must be updated simultaneously through
 backpropagation as there are no ways to train the intermediate results of the FCN otherwise. You can also alter additional parameters such as model depth in the FFNN class definition, but note that performance will be impacted.
 
-3. Run [ModelTester.py](Classifier/ModelTester.py)  
+3. Run [ModelTester.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/ModelTester.py)  
 You can specify a saved model file (.pt) to use for testing on the 
 current test dataset. This will reproduce the results that ModelTrainer outputs at the end of training
 if you run it right after ModelTrainer, but if you run BalancedDataSetBuilder again
