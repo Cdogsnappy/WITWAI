@@ -240,7 +240,29 @@ Output:
 ### Segmentation 
 
 ### FFNN
+The Feed Forward architecture consists of two parts. 
 
+#### Fully Convolutional Network
+The [fully convolutional network](https://arxiv.org/pdf/1411.4038) (FCN) accepts the original image data with the alpha-encoded 
+semantic segmentation map as input. The FCN has two main purposes:
+1. Image shape augmentation  
+The initial input shape of the image is 1024x1024x3, which is too large for our fully connected 
+linear layers. As a result, we use the FCN to downsample in the spatial dimensions of the image, and upsample 
+in the channel dimensions, such that the image is only 29x29x24 (20184 features).
+![](PageFiles/conv_net.png)
+2. Feature Extraction  
+As with other convolutional networks, we hope that the FCN can extract some feature data or relationship
+between the original image and the segmentation image.
+
+
+Following the FCN is a feed forward block (FFNN) that takes the multimodal data (FCN output + OCR) as input. The OCR data
+is run through a single layer network before being passed to the final network. Then the FCN output is flattened and concatenated 
+with the OCR output in a 1-d tensor.
+The FFNN is meant to derive a probability vector given the multimodal input. The model employs a one-hot vector with 
+smoothing for the truth values. We train on balanced classes with normalized images. We have experimented with
+dropout regularization and without, and the results are fairly similar. We chose our loss criterion to be
+Cross Entropy as it does well on balanced multiclass problems. There were attempts to use weighted cross entropy loss
+for the imbalanced classes, but this resulted in mode collapse too often. 
 
 ## Quantitative Results
 Our model exhibits fairly unstable behavior under our current data and parameters. For our evaluation metrics, we 
@@ -251,7 +273,8 @@ guessed a country 500 km away. This is reflected in our truth vectors mentioned 
 The model does not train well under these conditions, and is very sensitive to initialization. We found that when training for too long 
 the model quickly experienced mode collapse, and so a small amount of training epochs are used. Without mode collapse, we get varying levels of accuracy.
 The saved model included reported an accuracy of ~6%. This is of course not a great result, but it is better than randomly guessing, 
-as we have 23 classes which would have a random guess accuracy of ~4.5%.
+as we have 23 classes which would have a random guess accuracy of ~4.5%. This could be due to chance from running the model multiple times, but we think that the model
+is learning, just not the proper things yet.
 
 
 # Demo
@@ -287,42 +310,54 @@ Prerequisites: OCR Training + Segmentation Training
 
 There are some auxiliary files that won't be necessary for use.
 
-1. [ClassFrequency.py](Classifier/ClassFrequency.py) is used to calculate the frequency of each class in the data. This was used for data
+1. [ClassFrequency.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/ClassFrequency.py) is used to calculate the frequency of each class in the data. This was used for data
 normalization and is not necessary for training.
 
-2. [TestSetBuilder.py](Classifier/TestSetBuilder.py) is used to build a test and train dataset using all of the data. This does not account
+2. [TestSetBuilder.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/TestSetBuilder.py) is used to build a test and train dataset using all of the data. This does not account
 for class imbalance and thus will produce completely unstable training that will result in mode collapse.
 
 Some files will be used automatically and won't need to be called by a user.
 
-1. [CustomImageDataset.py](Classifier/CustomImageDataset.py) is an implementation of PyTorch's [Dataset](https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset) module which can
+1. [CustomImageDataset.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/CustomImageDataset.py) is an implementation of PyTorch's [Dataset](https://pytorch.org/docs/stable/data.html#torch.utils.data.Dataset) module which can
 take the data for training and testing and feed it to the neural network for us.
 
-2. [final_net.py](Classifier/final_net.py) has been wrapped inside two files, ModelTester and ModelTrainer, and thus doesn't need to 
+2. [final_net.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/final_net.py) has been wrapped inside two files, ModelTester and ModelTrainer, and thus doesn't need to 
 be used for reproducing results. However, any model tuning would be done in final_net.
 
 ### How to Train
-1. Run [BalancedSetBuilder.py](Classifier/BalancedSetBuilder.py)  
+1. Run [BalancedSetBuilder.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/BalancedSetBuilder.py)  
 This script will build a dataset with balanced classes for the model to run on. The
 data_size parameter determines how many data points for each country to use. Note that
 countries with < data_size samples will be skipped, and so the used_countries.csv file must be updated
 to reflect the countries that are present in the data.
-2. Run [ModelTrainer.py](Classifier/ModelTrainer.py)  
+2. Run [ModelTrainer.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/ModelTrainer.py)  
 Yes, it's that easy. If you are content with the model 
 parameters of final_net.py, then go ahead and run ModelTrainer. This will run the model for the 
 given number of epochs, using the given batch size, and will test the model on the test_data generated from
-BalancedSetBuilder. If you do wish to alter training hyperparameters, they can be found here in [final_net.py](Classifier/final_net.py):
+BalancedSetBuilder. If you do wish to alter training hyperparameters, they can be found here in [final_net.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/final_net.py):
 ![](PageFiles/final_net_parameters.png)
 Note that the training parameter learning rate cannot be decoupled for the two submodels in the FFNN; The weights must be updated simultaneously through
 backpropagation as there are no ways to train the intermediate results of the FCN otherwise. You can also alter additional parameters such as model depth in the FFNN class definition, but note that performance will be impacted.
 
-3. Run [ModelTester.py](Classifier/ModelTester.py)  
+3. Run [ModelTester.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/ModelTester.py)  
 You can specify a saved model file (.pt) to use for testing on the 
 current test dataset. This will reproduce the results that ModelTrainer outputs at the end of training
 if you run it right after ModelTrainer, but if you run BalancedDataSetBuilder again
-then the saved model will be tested on a new test set.
+then the saved model will be tested on a new test set. One saved model is provided [here](https://drive.google.com/file/d/1M7lZMOBQPbvjybKUeA0rDZaEyG-xruoq/view?usp=sharing).
 
 
+## Conclusion
+We believe that we employed methods that could effectively extract information out of our data. However, there were some
+issues that impacted the effectiveness of training and the model as a whole.
+1. Data quantity + quality 
+Our data was sparse for certain countries, and the amount of data diversity in the images was not very high.
+While we think it would be interesting to approach the problem with the latter still in place to see how a network deals
+with such a problem, we found that having so little good data made the network train poorly.
+2. Network density  
+Our network likely didn't have the depth and width required to represent the patterns in data that we needed it to. This is a 
+shortcoming of our choice to train and test on consumer grade hardware rather than industry standard equipment. 
 
+We found the OCR output and much of the segmentation output to be very promising. The networks were able to apply themselves to
+our dataset well and give accurate outputs. 
 
 

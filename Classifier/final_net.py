@@ -14,9 +14,9 @@ from CustomImageDataset import CustomImageDataset
 
 if not os.path.exists(os.path.dirname(os.path.dirname(os.getcwd())) + str('/outputs')):
     os.mkdir(os.path.dirname(os.path.dirname(os.getcwd())) + '/outputs')
-print(torch.seed())
+print('seed = ' + str(torch.seed()))
 np.set_printoptions(threshold=np.inf)
-f = open(str(os.path.dirname(os.path.dirname(os.getcwd()))) + "/Data/used_countries.csv", 'r')
+f = open(str(os.path.dirname(os.getcwd())) + "/Data/used_countries.csv", 'r')
 classes = [l.rstrip() for l in f]
 classes = classes[1:]
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -82,12 +82,12 @@ def run():
     fin_model = nn.DataParallel(fin_model, device_ids=[0])
     fin_model = fin_model.to(device)
     optimizer = torch.optim.Adam(
-        itertools.chain(fin_model.module.model.parameters(), fin_model.module.conv_net.parameters()), lr=0.0001)
+        itertools.chain(fin_model.module.model.parameters(), fin_model.module.conv_net.parameters(), fin_model.module.ocr_net.parameters()), lr=0.0001)
     criterion = nn.CrossEntropyLoss()
     criterion.to(device)
     losses = []
-    train_data = CustomImageDataset('../Data/train_data/train_ocr.csv', 'Data/train_data')
-    test_data = CustomImageDataset('../Data/test_data/test_ocr.csv', 'Data/test_data')
+    train_data = CustomImageDataset(str(os.path.dirname(os.getcwd())) + '/Data/train_data/train_ocr.csv', str(os.path.dirname(os.getcwd())) + '/Data/train_data')
+    test_data = CustomImageDataset(str(os.path.dirname(os.getcwd())) + '/Data/test_data/test_ocr.csv', str(os.path.dirname(os.getcwd())) + '/Data/test_data')
     train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_data, batch_size=len(classes) * 10, shuffle=False)
     true_label_matrix = np.diag(np.ones(len(classes)) * (1 - len(classes) * smoothing_factor))
@@ -111,7 +111,7 @@ def run():
     plt.title("Loss (Cross-Entropy)")
     plt.xlabel("Epoch")
     plt.ylabel("Loss")
-    plt.savefig('outputs/loss.png')
+    plt.savefig(str(os.path.dirname(os.getcwd())) + '/outputs/loss.png')
     test_labels, test_data = next(iter(test_loader))
     true_label = true_label_matrix[test_labels.numpy(), :]
     test_images, test_lang = test_data

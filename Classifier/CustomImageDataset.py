@@ -8,6 +8,7 @@ from torch.utils.data import Dataset
 import torchvision.transforms as TF
 
 f = open(str(os.path.dirname(os.getcwd())) + "/Data/used_countries.csv", 'r')
+print(os.path.dirname(os.getcwd()))
 classes = [l.rstrip() for l in f]
 classes = classes[1:]
 f = open(str(os.path.dirname(os.getcwd())) + "/Data/language_list.csv", 'r')
