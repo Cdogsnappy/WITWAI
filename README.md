@@ -41,11 +41,11 @@ Prior applications of machine learning to GeoLocation have used a number of diff
 
 In the context of GeoLocation, our task falls under the problem of Single-View Ground Image GeoLocalization.
 
-[DeepGeo](https://arxiv.org/abs/1810.03077)
+[DeepGeo](https://arxiv.org/abs/1810.03077) - DeepGeo employs Google StreetView to train a classifier model on the United States. Implementation is based on a ResNet model. This is similar to our implementation in that it is restricted to only images in a specific range. However, they do not implement text recognition or segmentation, and instead only utilize a standard ResNet architecture.
 
-PlaNet
+[PlaNet](https://arxiv.org/abs/1602.05314) - PlaNet utilizes a very large 126M-image dataset from scraped web images. Images are only slightly filtered. Implementation uses an LSTM model.
 
-TransLocator
+[TransLocator](https://www.cis.jhu.edu/~shraman/TransLocator/ECCV_2022_TransLocator_Slides.pdf) - TransLocator is a Transformer-based model for GeoLocation. TransLocator utilizes a 4.7M-image dataset scraped from Flickr images. TransLocator is interesting in that it employs a non-standard model for computer vision, as opposed to the ResNet and LSTM of PlaNet and DeepGeo. Accuracy is significantly higher for TransLocator compared to other prior work.
 
 
 
