@@ -38,15 +38,7 @@ Prior applications of machine learning to GeoLocation have used a number of diff
 
 [DeepGeo](https://arxiv.org/abs/1810.03077) uses a CNN
 
-Website:
 
-The final project report must be submitted to Canvas as a website. The website must include:
-
-- Project title and team members
-- Link to presentation slides
-- Link to github repository.
-- Intro presenting and motivating the problem
-- Your methodology (method, data, evaluation metrics). If applicable, highlight how it differs from prior work (new experiments, new methods, etc)
 
 # Methodology 
 
@@ -81,6 +73,20 @@ The gmaps dataset is collected by the code in the later half of the *mapillary_g
 - a. We use a standard HTTP query, with the address as an argument in the HTTP request.
 - b. If we receive a 200 response code (i.e. succesful query), and if the image is not empty (image size > 10kb), we store the image. A non-negligible number of images result in empty returns, which are blank with an image filesize ~5kb.
 7) Finally, we store the (lat/lon) and country ID in a .csv file, and store the image with the filename corresponding to the dataset's index. 
+
+Mapillary is an open-source dataset of publicly uploaded images by users around the world, supported by the OpenStreetMaps project. The mapillary dataset is collected similarly to the gmaps dataset.
+
+The Mapillary dataset is collected similarly.
+
+1) We load a GeoPandas object (*world*) containing the polygon representation of countries. This maps a (longitude/latitude) pair to a specific country ID.
+2) We join *world* with a new GeoPandas object containing the Urban Areas polygon database, *urban_areas*. This is the Global Human Settlement Layer R2019A dataset [GHS-FUA R2019A](https://human-settlement.emergency.copernicus.eu/ghs_fua.php). By joining the two objects, we are able to restrict sampling to urban areas, in order to target higher-information images when sampling.
+3) We then filter out only European urban areas prior to beginning the dataset search. 
+4) We then randomly sample urban areas in the resultant *urban_areas_in_europe* object.
+5) This urban area object contains bounding boxes (west, south, east, north), i.e. two (lon/lat) pairs identifying the opposing corners of the box.
+6) Each urban area contains multiple "tiles". We sweep over these tiles, and query the Mapillary API to identify if any images are present in a given tile.
+7) If a given tile contains images, we request the API again for the URL of the images for a given tile. 
+8) Then, we query the API for the image at the given URL. 
+9) Finally, we store the (lat/lon) and country ID in a .csv file, and store the image with the filename corresponding to the dataset's index.
 
 ### Data Processing
 
@@ -250,7 +256,7 @@ as we have 23 classes which would have a random guess accuracy of ~4.5%.
 
 # Demo
 
-### It is _strongly_ recommended that you run the Demo on a system with CUDA enabled. 
+### It is _strongly_ recommended that you run the Demo on a system with CUDA installed. 
 
 There are a few things needed for the demo.
 First of all, you'll want to run 
