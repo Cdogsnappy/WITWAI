@@ -38,7 +38,15 @@ By now it is surely obvious that the task of GeoLocation is learnable. Our appro
 
 Prior applications of machine learning to GeoLocation have used a number of different models with varying degrees of success.
 
-[DeepGeo](https://arxiv.org/abs/1810.03077) uses a CNN
+In the context of GeoLocation, our task falls under the problem of Single-View Ground Image GeoLocalization.
+
+[DeepGeo](https://arxiv.org/abs/1810.03077)
+
+PlaNet
+
+TransLocator
+
+
 
 
 
