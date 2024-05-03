@@ -348,7 +348,9 @@ The model does not train well under these conditions, and is very sensitive to i
 the model quickly experienced mode collapse, and so a small amount of training epochs are used. Without mode collapse, we get varying levels of accuracy.
 The saved model included reported an accuracy of ~6%. This is of course not a great result, but it is better than randomly guessing, 
 as we have 23 classes which would have a random guess accuracy of ~4.5%. This could be due to chance from running the model multiple times, but we think that the model
-is learning, just not the proper things yet.
+is learning, just not the proper things yet. Some of our more stable losses across 4 epochs can be seen here:
+![](PageFiles/ex_loss.png)
+Training past 4-8 epochs becomes more unstable, and as of now we have not implemented early stopping in the model.
 
 
 # Demo
