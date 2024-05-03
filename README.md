@@ -407,7 +407,9 @@ be used for reproducing results. However, any model tuning would be done in fina
 This script will build a dataset with balanced classes for the model to run on. The
 data_size parameter determines how many data points for each country to use. Note that
 countries with < data_size samples will be skipped, and so the used_countries.csv file must be updated
-to reflect the countries that are present in the data.
+to reflect the countries that are present in the data. This script looks for a directory called 'seg_data', make sure you
+store your segmentation data there or update BalancedSetBuilder accordingly.
+
 2. Run [ModelTrainer.py](https://github.com/Cdogsnappy/WITWAI/blob/main/Classifier/ModelTrainer.py)  
 Yes, it's that easy. If you are content with the model 
 parameters of final_net.py, then go ahead and run ModelTrainer. This will run the model for the 
@@ -453,3 +455,5 @@ our dataset well and give accurate outputs.
 [6] StreetCLIP is a robust foundation model for open-domain image geolocalization and other geographic and climate-related tasks. https://huggingface.co/geolocal/StreetCLIP 
 
 [7] https://www.cis.jhu.edu/~shraman/TransLocator/ECCV_2022_TransLocator_Slides.pdf 
+
+[8] Fully Convolutional Networks for Semantic Segmentation https://arxiv.org/pdf/1411.4038
