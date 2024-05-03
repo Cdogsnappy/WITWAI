@@ -74,6 +74,10 @@ The gmaps dataset is collected by the code in the later half of the *mapillary_g
 - b. If we receive a 200 response code (i.e. succesful query), and if the image is not empty (image size > 10kb), we store the image. A non-negligible number of images result in empty returns, which are blank with an image filesize ~5kb.
 7) Finally, we store the (lat/lon) and country ID in a .csv file, and store the image with the filename corresponding to the dataset's index. 
 
+Below is an example of an image in the gmaps dataset. As explained below in the kaggle/gmaps Preparation subsection, this includes watermarks that will need to be masked when the image is used for language identification.
+
+![](PageFiles/gmaps_example.jpg)
+
 Mapillary is an open-source dataset of publicly uploaded images by users around the world, supported by the OpenStreetMaps project. The mapillary dataset is collected similarly to the gmaps dataset.
 
 The Mapillary dataset is collected similarly.
@@ -88,9 +92,8 @@ The Mapillary dataset is collected similarly.
 8) Then, we query the API for the image at the given URL. 
 9) Finally, we store the (lat/lon) and country ID in a .csv file, and store the image with the filename corresponding to the dataset's index.
 
-### Data Processing
-
-Mapillary is an open-source dataset of publicly uploaded images by users around the world, supported by the OpenStreetMaps project. The mapillary dataset is collected similarly to the gmaps dataset.
+The Mapillary dataset is what is used in our final model training run. Below is an example image from the mapillary dataset (which is cropped to a standard size). 
+![](PageFiles/mapillary_example.png)
 
 
 ### OCR Language Guessing
