@@ -7,7 +7,9 @@ Approaching GeoLocation with Machine Learning
 - Morgan Turville-Heitz
 
 This project was made for CS 766 Computer Vision at UW-Madison.
+
 [Project Presentation](https://docs.google.com/presentation/d/1akX8-ajRWpmPtD93Bkqu015D39DX9NZOcdgDnppzA8Q)
+
 [GitHub](https://github.com/Cdogsnappy/WITWAI)
 
 ---
@@ -258,6 +260,49 @@ Output:
 
 
 ### Segmentation 
+Semantic segmentation is an important step for image analysis as it decomposes images into sets of classes of objects that are better understood. Incorporating this in our model gives room to implement sub-models for predicting certain classes of objects like architectures, vehicles, and flora.
+
+To handle semantic segmentation, we use [DeepLabV3Plus](https://github.com/VainF/DeepLabV3Plus-Pytorch)'s mobilenet architecture pretrained on the [Cityscapes](https://www.cityscapes-dataset.com/) dataset. You can read more about Cityscapes on their website, but suffice to say the annotated images of their dataset is highly relevant to our task of GeoLocation, particularly in urban and suburban scenes.
+
+DeepLabV3Plus has the capability of utilizing atrous convolutions, which in theory would yield more accurate results, but the pre-trained configurations offered do not use it.
+Regardless, our results are good enough for our purposes. Below are some examples.
+
+<p align="center">
+  <img src="PageFiles/seg_ex1_1.png" width="300"/>
+  <img src="PageFiles/seg_ex1_2.png" width="300"/>
+</p>
+
+<p align="center">
+  <img src="PageFiles/seg_ex2_1.png" width="300"/>
+  <img src="PageFiles/seg_ex2_2.png" width="300"/>
+</p>
+
+The outputs of the segmentation are, for each image, the colorized segmentation, and a WxHx4 image where the alpha channel encodes the classification. We found the 4-channel output to be convenient as input into the FFNN.
+
+The values of the alpha channel correspond with classes of Cityscapes:
+
+| Index | Class         |
+|-------|---------------|
+| 0     | road          |
+| 1     | sidewalk      |
+| 2     | building      |
+| 3     | wall          |
+| 4     | fence         |
+| 5     | pole          |
+| 6     | traffic light |
+| 7     | traffic sign  |
+| 8     | vegetation    |
+| 9     | terrain       |
+| 10    | sky           |
+| 11    | person        |
+| 12    | rider         |
+| 13    | car           |
+| 14    | truck         |
+| 15    | bus           |
+| 16    | train         |
+| 17    | motorcycle    |
+| 18    | bicycle       |
+
 
 ### FFNN
 The Feed Forward architecture consists of two parts. 
@@ -322,8 +367,8 @@ Then, you will be able to run *mapillary_google_maps_data_prep.ipynb* to generat
 
 The notebook should work as is, but you'll want to run the watermark removal blocks if your dataset is gmaps or kaggle. This code is found at the end of the script, and should not be used for mapillary (however, if you'd like to try and remove other watermarks from the mapillary dataset, this codeblock would work as well).
 
-## Semseg
-
+## Segmentation
+After collecting the training data, you will want to perform semantic segmentation on the images. To do this, run [perform_segmentation](https://github.com/Cdogsnappy/WITWAI/blob/main/perform_segmentation.ipynb). Be sure to update your input and output directories first.
 
 ## FFNN Training and Testing
 Prerequisites: OCR Training + Segmentation Training
