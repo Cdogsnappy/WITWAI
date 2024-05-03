@@ -119,6 +119,9 @@ The primary issue is that the kaggle/gmaps datasets contain Google© watermarks.
 For instance, below is a watermarked example with the "google" watermarks bounded by red boxes. 
 ![](PageFiles/watermarked_example_2524.png)
 
+After masking the watermarks from the image, black boxes are now displayed over the watermarks:
+![](PageFiles/masked_example_2524.png)
+
 
 After this point, the kaggle/gmaps preparation is identical to mapillary, as mapillary does not have constant watermarks. There are watermarks on the mapillary dataset, but there are far more variations, since the dataset is open sourced.
 
