@@ -453,3 +453,10 @@ our dataset well and give accurate outputs.
 [6] StreetCLIP is a robust foundation model for open-domain image geolocalization and other geographic and climate-related tasks. https://huggingface.co/geolocal/StreetCLIP 
 
 [7] https://www.cis.jhu.edu/~shraman/TransLocator/ECCV_2022_TransLocator_Slides.pdf 
+
+[8] https://www.kaggle.com/datasets/paulchambaz/google-street-view/data
+
+[9] https://www.mapillary.com/osm
+
+
+
