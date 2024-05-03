@@ -438,4 +438,18 @@ shortcoming of our choice to train and test on consumer grade hardware rather th
 We found the OCR output and much of the segmentation output to be very promising. The networks were able to apply themselves to
 our dataset well and give accurate outputs. 
 
+# References
 
+[1] M. Cordts, M. Omran, S. Ramos, T. Rehfeld, M. Enzweiler, R. Benenson, U. Franke, S. Roth, and B. Schiele, “The Cityscapes Dataset for Semantic Urban Scene Understanding,” in Proc. of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2016.
+
+[2] https://github.com/VainF/DeepLabV3Plus-Pytorch
+
+[3] https://github.com/JaidedAI/EasyOCR 
+
+[4] DeepGeo: Photo Localization with Deep Neural Network https://arxiv.org/pdf/1810.03077.pdf 
+
+[5] GeoGuessr AI. Divides the continental US into grids and samples training data from Google Street View. ResNET model. https://nirvan66.github.io/geoguessr.html 
+
+[6] StreetCLIP is a robust foundation model for open-domain image geolocalization and other geographic and climate-related tasks. https://huggingface.co/geolocal/StreetCLIP 
+
+[7] https://www.cis.jhu.edu/~shraman/TransLocator/ECCV_2022_TransLocator_Slides.pdf 
