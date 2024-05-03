@@ -327,6 +327,10 @@ The notebook should work as is, but you'll want to run the watermark removal blo
 
 ## FFNN Training and Testing
 Prerequisites: OCR Training + Segmentation Training
+Alternatively: [Original Image Data](https://uwmadison.box.com/s/97tyk2r4av7mso4nnfe3s9bptgfio4je) and [Segmented Image Data](https://uwmadison.box.com/s/tw47y4qyuuikrbq5qiebqa2a82kj9pgx)
+
+Data can be downloaded above (Original Image Data ~ 1 GB, Segmented Image Data ~ 10 GB)
+
 
 There are some auxiliary files that won't be necessary for use.
 
