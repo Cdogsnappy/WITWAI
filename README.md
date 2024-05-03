@@ -38,8 +38,9 @@ By now it is surely obvious that the task of GeoLocation is learnable. Our appro
 
 Prior applications of machine learning to GeoLocation have used a number of different models with varying degrees of success.
 
-[DeepGeo](https://arxiv.org/abs/1810.03077) uses a CNN
 
+[DeepGeo](https://arxiv.org/abs/1810.03077) uses a CNN
+[Translocator](https://www.cis.jhu.edu/~shraman/TransLocator/ECCV_2022_TransLocator_Slides.pdf) is a succesful implementation of transformer architecture to determine location based on images. They implement geo-localization.
 
 
 # Methodology 
