@@ -234,7 +234,29 @@ Output:
 ### Segmentation 
 
 ### FFNN
+The Feed Forward architecture consists of two parts. 
 
+#### Fully Convolutional Network
+The [fully convolutional network](https://arxiv.org/pdf/1411.4038) (FCN) accepts the original image data with the alpha-encoded 
+semantic segmentation map as input. The FCN has two main purposes:
+1. Image shape augmentation  
+The initial input shape of the image is 1024x1024x3, which is too large for our fully connected 
+linear layers. As a result, we use the FCN to downsample in the spatial dimensions of the image, and upsample 
+in the channel dimensions, such that the image is only 29x29x24 (20184 features).
+![](PageFiles/conv_net.png)
+2. Feature Extraction  
+As with other convolutional networks, we hope that the FCN can extract some feature data or relationship
+between the original image and the segmentation image.
+
+
+Following the FCN is a feed forward block (FFNN) that takes the multimodal data (FCN output + OCR) as input. The OCR data
+is run through a single layer network before being passed to the final network. Then the FCN output is flattened and concatenated 
+with the OCR output in a 1-d tensor.
+The FFNN is meant to derive a probability vector given the multimodal input. The model employs a one-hot vector with 
+smoothing for the truth values. We train on balanced classes with normalized images. We have experimented with
+dropout regularization and without, and the results are fairly similar. We chose our loss criterion to be
+Cross Entropy as it does well on balanced multiclass problems. There were attempts to use weighted cross entropy loss
+for the imbalanced classes, but this resulted in mode collapse too often. 
 
 ## Quantitative Results
 Our model exhibits fairly unstable behavior under our current data and parameters. For our evaluation metrics, we 
@@ -245,7 +267,8 @@ guessed a country 500 km away. This is reflected in our truth vectors mentioned 
 The model does not train well under these conditions, and is very sensitive to initialization. We found that when training for too long 
 the model quickly experienced mode collapse, and so a small amount of training epochs are used. Without mode collapse, we get varying levels of accuracy.
 The saved model included reported an accuracy of ~6%. This is of course not a great result, but it is better than randomly guessing, 
-as we have 23 classes which would have a random guess accuracy of ~4.5%.
+as we have 23 classes which would have a random guess accuracy of ~4.5%. This could be due to chance from running the model multiple times, but we think that the model
+is learning, just not the proper things yet.
 
 
 # Demo
@@ -314,9 +337,21 @@ backpropagation as there are no ways to train the intermediate results of the FC
 You can specify a saved model file (.pt) to use for testing on the 
 current test dataset. This will reproduce the results that ModelTrainer outputs at the end of training
 if you run it right after ModelTrainer, but if you run BalancedDataSetBuilder again
-then the saved model will be tested on a new test set.
+then the saved model will be tested on a new test set. One saved model is provided [here](https://drive.google.com/file/d/1M7lZMOBQPbvjybKUeA0rDZaEyG-xruoq/view?usp=sharing).
 
 
+## Conclusion
+We believe that we employed methods that could effectively extract information out of our data. However, there were some
+issues that impacted the effectiveness of training and the model as a whole.
+1. Data quantity + quality 
+Our data was sparse for certain countries, and the amount of data diversity in the images was not very high.
+While we think it would be interesting to approach the problem with the latter still in place to see how a network deals
+with such a problem, we found that having so little good data made the network train poorly.
+2. Network density  
+Our network likely didn't have the depth and width required to represent the patterns in data that we needed it to. This is a 
+shortcoming of our choice to train and test on consumer grade hardware rather than industry standard equipment. 
 
+We found the OCR output and much of the segmentation output to be very promising. The networks were able to apply themselves to
+our dataset well and give accurate outputs. 
 
 
