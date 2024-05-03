@@ -46,10 +46,14 @@ Prior applications of machine learning to GeoLocation have used a number of diff
 
 We have implemented a multi-model pipeline in order to classify the country label of each image. This is utilizing an OCR text recognition model, a SotA LLM for language identification, an image segmentation model, and a deep feedforward network. All code is written in python, using either Jupyter notebooks or Python scripts. Implementation of the FFNN is handled in PyTorch. 
 
-### Dataset(s)
+### Initial Dataset
 
 The initial dataset that was used during our pipeline testing is a set of 10,000 images and scraped from google street view. These can be found at [Google Street View](https://www.kaggle.com/datasets/paulchambaz/google-street-view/data) - the script *kaggle_data_prep.ipynb* can be used to collect this dataset. Images are 640x640. We found a very low density of text, as well as a low density of segmentable features, in this dataset, so this was only used for testing the initial implementation of our models, and was not used during model training. 
 
+Below is an example from the kaggle dataset. 
+![](PageFiles/kaggle_example.png)
+
+### Primary Datasets
 For the model training, we attempted to collect two separate datasets:
 1. Google Maps Street View (gmaps) Data
 2. OpenStreetMap API - Mapillary (mapillary) Data
@@ -110,6 +114,11 @@ The primary issue is that the kaggle/gmaps datasets contain Google© watermarks.
 3) Detected strings are then matched against the following:
 - ["gccole", "cgoogle", "cgccgle", "cgcogle", "cgocgle", "google", "gccgle", "gcogle", "gocgle", "gocnle", "gcogie", "oogle"]
 4) If any matches with the above list are found, we overwrite the bounding box for that text with black pixels. This image is then saved into a new directory, which is used for the OCR extraction.
+
+
+For instance, below is a watermarked example with the "google" watermarks bounded by red boxes. 
+![](PageFiles/watermarked_example_2524.png)
+
 
 After this point, the kaggle/gmaps preparation is identical to mapillary, as mapillary does not have constant watermarks. There are watermarks on the mapillary dataset, but there are far more variations, since the dataset is open sourced.
 
